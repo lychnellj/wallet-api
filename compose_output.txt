@@ -1,0 +1,110 @@
+﻿#1 [internal] load local bake definitions
+#1 reading from stdin 606B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 829B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for mcr.microsoft.com/dotnet/sdk:10.0
+#3 DONE 0.1s
+
+#4 [internal] load metadata for mcr.microsoft.com/dotnet/aspnet:10.0
+#4 DONE 0.1s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 129B done
+#5 DONE 0.0s
+
+#6 [runtime 1/3] FROM mcr.microsoft.com/dotnet/aspnet:10.0@sha256:a04d1c1d2d26119049494057d80ea6cda25bbd8aef7c444a1fc1ef874fd3955b
+#6 resolve mcr.microsoft.com/dotnet/aspnet:10.0@sha256:a04d1c1d2d26119049494057d80ea6cda25bbd8aef7c444a1fc1ef874fd3955b 0.0s done
+#6 DONE 0.0s
+
+#7 [build  1/10] FROM mcr.microsoft.com/dotnet/sdk:10.0@sha256:478b9038d187e5b5c29bfa8173ded5d29e864b5ad06102a12106380ee01e2e49
+#7 resolve mcr.microsoft.com/dotnet/sdk:10.0@sha256:478b9038d187e5b5c29bfa8173ded5d29e864b5ad06102a12106380ee01e2e49 0.0s done
+#7 DONE 0.0s
+
+#8 [internal] load build context
+#8 transferring context: 5.15kB 0.0s done
+#8 DONE 0.0s
+
+#9 [build  5/10] COPY src/SimpleWallet.Application/Wallet.Application.csproj src/SimpleWallet.Application/
+#9 CACHED
+
+#10 [build  2/10] WORKDIR /src
+#10 CACHED
+
+#11 [build  7/10] COPY src/SimpleWallet.Infrastructure/Wallet.Infrastructure.csproj src/SimpleWallet.Infrastructure/
+#11 CACHED
+
+#12 [build  4/10] COPY src/SimpleWallet.Api/Wallet.Api.csproj src/SimpleWallet.Api/
+#12 CACHED
+
+#13 [build  6/10] COPY src/SimpleWallet.Domain/Wallet.Domain.csproj src/SimpleWallet.Domain/
+#13 CACHED
+
+#14 [build  3/10] COPY SimpleWallet.sln ./
+#14 CACHED
+
+#15 [build  8/10] RUN dotnet restore src/SimpleWallet.Api/Wallet.Api.csproj
+#15 CACHED
+
+#16 [build  9/10] COPY . .
+#16 DONE 0.1s
+
+#17 [build 10/10] RUN dotnet publish src/SimpleWallet.Api/Wallet.Api.csproj -c Release -o /app/publish /p:UseAppHost=false
+#17 0.982   Determining projects to restore...
+#17 1.710   All projects are up-to-date for restore.
+#17 4.504 /src/src/SimpleWallet.Domain/Entities/Transaction.cs(23,13): warning CS8618: Non-nullable property 'Wallet' must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring the property as nullable. [/src/src/SimpleWallet.Domain/Wallet.Domain.csproj]
+#17 4.504 /src/src/SimpleWallet.Domain/Entities/Wallet.cs(17,13): warning CS8618: Non-nullable property 'User' must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring the property as nullable. [/src/src/SimpleWallet.Domain/Wallet.Domain.csproj]
+#17 4.504 /src/src/SimpleWallet.Domain/Entities/Wallet.cs(19,12): warning CS8618: Non-nullable property 'User' must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring the property as nullable. [/src/src/SimpleWallet.Domain/Wallet.Domain.csproj]
+#17 4.504 /src/src/SimpleWallet.Domain/Entities/Transaction.cs(25,12): warning CS8618: Non-nullable property 'Wallet' must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring the property as nullable. [/src/src/SimpleWallet.Domain/Wallet.Domain.csproj]
+#17 4.529   Wallet.Domain -> /src/src/SimpleWallet.Domain/bin/Release/net10.0/Wallet.Domain.dll
+#17 4.916   Wallet.Application -> /src/src/SimpleWallet.Application/bin/Release/net10.0/Wallet.Application.dll
+#17 5.382   Wallet.Infrastructure -> /src/src/SimpleWallet.Infrastructure/bin/Release/net10.0/Wallet.Infrastructure.dll
+#17 6.539   Wallet.Api -> /src/src/SimpleWallet.Api/bin/Release/net10.0/Wallet.Api.dll
+#17 6.605   Wallet.Api -> /app/publish/
+#17 DONE 6.7s
+
+#18 [runtime 2/3] WORKDIR /app
+#18 CACHED
+
+#19 [runtime 3/3] COPY --from=build /app/publish .
+#19 CACHED
+
+#20 exporting to image
+#20 exporting layers done
+#20 exporting manifest sha256:0c02e523f969712a731ea8321f91919b5bfb2f3a3f3c7e87868e61dbab5b0e68 done
+#20 exporting config sha256:cc7f3df4619c1eb563897a462a5ccca45c39dd7941a1911ecb03dc82edb66346 done
+#20 exporting attestation manifest sha256:8fe79669cfbd303e278ff09dbd668d42f23a82e6f125d54160f832936189f4f4 0.0s done
+#20 exporting manifest list sha256:cb6219aa20fa74a5e71ea6d7d050d568c4bcca42a496b796ff4fa66a6eeea2b5 0.0s done
+#20 naming to docker.io/library/wallet-api:latest
+#20 naming to docker.io/library/wallet-api:latest done
+#20 unpacking to docker.io/library/wallet-api:latest 0.0s done
+#20 DONE 0.1s
+
+#21 resolving provenance for metadata file
+#21 DONE 0.0s
+docker :  wallet-api  Built
+At line:1 char:1
++ docker compose up -d --build 2>&1 | tee compose_output.txt
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ( wallet-api  Built:String) [], Re 
+   moteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ Network wallet_default  Creating
+ Network wallet_default  Created
+ Volume wallet_postgres_data  Creating
+ Volume wallet_postgres_data  Created
+ Container simplewallet-db  Creating
+ Container simplewallet-db  Created
+ Container simplewallet-api  Creating
+ Container simplewallet-api  Created
+ Container simplewallet-db  Starting
+ Container simplewallet-db  Started
+ Container simplewallet-db  Waiting
+ Container simplewallet-db  Healthy
+ Container simplewallet-api  Starting
+ Container simplewallet-api  Started
+

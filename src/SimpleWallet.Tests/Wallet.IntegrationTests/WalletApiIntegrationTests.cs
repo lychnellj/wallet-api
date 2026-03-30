@@ -1,0 +1,73 @@
+﻿using System.Net;
+using System.Net.Http.Json;
+using System.Text.Json;
+
+namespace SimpleWallet.IntegrationTests;
+
+public class WalletApiIntegrationTests
+{
+    private readonly HttpClient _client;
+    private readonly string _baseUrl = "http://localhost:8080";
+
+    public WalletApiIntegrationTests()
+    {
+        _client = new HttpClient();
+    }
+
+    [Fact]
+    public async Task FullWorkflow_LoginThenAuthenticatedRequests_ReturnsSuccess()
+    {
+        // arrange
+        var loginRequest = new { username = "admin", password = "admin123" };
+
+        // act 1: login to get JWT token
+        var loginResponse = await _client.PostAsJsonAsync($"{_baseUrl}/api/Authentication/login", loginRequest);
+        Assert.Equal(HttpStatusCode.OK, loginResponse.StatusCode);
+        
+        var loginContent = await loginResponse.Content.ReadAsStringAsync();
+        var jsonDoc = JsonDocument.Parse(loginContent);
+        var token = jsonDoc.RootElement.GetProperty("token").GetString();
+        Assert.NotNull(token);
+
+        // act 2: add authorization header for subsequent requests
+        _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        // act 3: get wallets for a user (GET endpoints don't require auth in this API)
+        var userId = "00000000-0000-0000-0000-000000000001";
+        var getResponse = await _client.GetAsync($"{_baseUrl}/api/Wallet/user/{userId}");
+        
+        // assert: should return 200 OK
+        Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
+    }
+
+    [Fact]
+    public async Task Login_WithValidCredentials_ReturnsTokenInOkResponse()
+    {
+        // arrange
+        var loginRequest = new { username = "user", password = "user123" };
+
+        // act
+        var loginResponse = await _client.PostAsJsonAsync($"{_baseUrl}/api/Authentication/login", loginRequest);
+
+        // assert
+        Assert.Equal(HttpStatusCode.OK, loginResponse.StatusCode);
+        var content = await loginResponse.Content.ReadAsStringAsync();
+        var jsonDoc = JsonDocument.Parse(content);
+        Assert.True(jsonDoc.RootElement.TryGetProperty("token", out var tokenProperty));
+        Assert.NotEqual("", tokenProperty.GetString());
+    }
+
+    [Fact]
+    public async Task DeleteWallet_WithoutToken_Returns401Unauthorized()
+    {
+        // arrange - don't add authorization header
+        var walletId = "00000000-0000-0000-0000-000000000001";
+
+        // act: try to DELETE (which requires auth) without token
+        var response = await _client.DeleteAsync($"{_baseUrl}/api/Wallet/{walletId}");
+
+        // assert: should return 401 Unauthorized since DELETE requires [Authorize]
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+}
+

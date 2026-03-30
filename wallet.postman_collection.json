@@ -1,0 +1,235 @@
+﻿{
+	"info": {
+		"_postman_id": "simplewallet-api",
+		"name": "SimpleWallet API",
+		"description": "Wallet Management API - Explore and test all endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Authentication/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Authentication", "login"]
+						}
+					},
+					"response": {
+						"status": "OK",
+						"code": 200,
+						"body": "{\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n}"
+					}
+				}
+			]
+		},
+		{
+			"name": "Wallet",
+			"item": [
+				{
+					"name": "Get Wallet by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Wallet/00000000-0000-0000-0000-000000000001",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Wallet", "00000000-0000-0000-0000-000000000001"]
+						}
+					},
+					"response": {
+						"status": "OK",
+						"code": 200,
+						"body": "{\n  \"id\": \"00000000-0000-0000-0000-000000000001\",\n  \"userId\": \"00000000-0000-0000-0000-000000000001\",\n  \"balance\": 1500\n}"
+					}
+				},
+				{
+					"name": "Get Wallets by User ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Wallet/user/00000000-0000-0000-0000-000000000001",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Wallet", "user", "00000000-0000-0000-0000-000000000001"]
+						}
+					},
+					"response": {
+						"status": "OK",
+						"code": 200,
+						"body": "[\n  {\n    \"id\": \"00000000-0000-0000-0000-000000000001\",\n    \"userId\": \"00000000-0000-0000-0000-000000000001\",\n    \"balance\": 1500\n  }\n]"
+					}
+				},
+				{
+					"name": "Create Wallet",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"00000000-0000-0000-0000-000000000002\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Wallet",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Wallet"]
+						}
+					},
+					"response": {
+						"status": "Created",
+						"code": 201,
+						"body": "{\n  \"id\": \"new-wallet-id\",\n  \"userId\": \"00000000-0000-0000-0000-000000000002\",\n  \"balance\": 0\n}"
+					}
+				},
+				{
+					"name": "Delete Wallet",
+					"request": {
+						"method": "DELETE",
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Wallet/00000000-0000-0000-0000-000000000001",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Wallet", "00000000-0000-0000-0000-000000000001"]
+						}
+					},
+					"response": {
+						"status": "No Content",
+						"code": 204
+					}
+				}
+			]
+		},
+		{
+			"name": "Transaction",
+			"item": [
+				{
+					"name": "Deposit",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"walletId\": \"00000000-0000-0000-0000-000000000001\",\n  \"amount\": 500\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Transaction/deposit",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Transaction", "deposit"]
+						}
+					},
+					"response": {
+						"status": "No Content",
+						"code": 204
+					}
+				},
+				{
+					"name": "Withdraw",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"walletId\": \"00000000-0000-0000-0000-000000000001\",\n  \"amount\": 200\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Transaction/withdraw",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Transaction", "withdraw"]
+						}
+					},
+					"response": {
+						"status": "No Content",
+						"code": 204
+					}
+				},
+				{
+					"name": "Transfer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fromWalletId\": \"00000000-0000-0000-0000-000000000001\",\n  \"toWalletId\": \"00000000-0000-0000-0000-000000000002\",\n  \"amount\": 300\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Transaction/transfer",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Transaction", "transfer"]
+						}
+					},
+					"response": {
+						"status": "No Content",
+						"code": 204
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
+
