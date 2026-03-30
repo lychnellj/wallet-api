@@ -1,6 +1,6 @@
-﻿# SimpleWallet API
+﻿# Simple wallet API
 
-A wallet management API built with ASP.NET Core 10.0, PostgreSQL, and Clean Architecture patterns.
+A wallet management API built with ASP.NET Core 10.0, PostgreSQL and Clean Architecture patterns.
 
 ## Features
 
@@ -18,13 +18,13 @@ A wallet management API built with ASP.NET Core 10.0, PostgreSQL, and Clean Arch
 
 ```
 src/
-â”œâ”€â”€ SimpleWallet.Api/              # API layer (controllers, DTOs, middleware)
-â”œâ”€â”€ SimpleWallet.Application/      # Application layer (services, interfaces)
-â”œâ”€â”€ SimpleWallet.Domain/           # Domain layer (entities, exceptions, validation)
-â”œâ”€â”€ SimpleWallet.Infrastructure/   # Infrastructure layer (repositories, database)
-â””â”€â”€ SimpleWallet.Tests/            # Test projects
-    â”œâ”€â”€ Wallet.UnitTests/         # Domain logic tests
-    â””â”€â”€ Wallet.IntegrationTests/  # API integration tests
+SimpleWallet.Api/              # API layer (controllers, DTOs, middleware)
+SimpleWallet.Application/      # Application layer (services, interfaces)
+SimpleWallet.Domain/           # Domain layer (entities, exceptions, validation)
+SimpleWallet.Infrastructure/   # Infrastructure layer (repositories, database)
+SimpleWallet.Tests/            # Test projects
+Wallet.UnitTests/         # Domain logic tests
+Wallet.IntegrationTests/  # API integration tests
 ```
 
 ## Getting Started
