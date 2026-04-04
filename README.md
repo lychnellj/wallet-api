@@ -159,6 +159,10 @@ Authorization: Bearer {token}
 - `POST /api/Wallet` - Create a new wallet
 - `DELETE /api/Wallet/{id}` - Delete wallet (Admin only) [Requires JWT]
 
+### Users
+
+- `PATCH /api/User/{id}` - Update user name and/or email (Admin only) [Requires JWT]
+
 ### Transactions
 
 - `POST /api/Transaction/deposit` - Deposit funds to a wallet
