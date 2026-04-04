@@ -60,3 +60,46 @@ public class WalletDomainTests
     }
 }
 
+public class UserDomainTests
+{
+    [Fact]
+    public void UpdateProfile_WithNameOnly_UpdatesNameAndKeepsEmail()
+    {
+        // arrange
+        var user = new User("Alice", "alice@example.com");
+        var originalEmail = user.Email;
+
+        // act
+        user.UpdateProfile("Alice Updated", null);
+
+        // assert
+        Assert.Equal("Alice Updated", user.Name);
+        Assert.Equal(originalEmail, user.Email);
+    }
+
+    [Fact]
+    public void UpdateProfile_WithEmailOnly_UpdatesEmailAndKeepsName()
+    {
+        // arrange
+        var user = new User("Alice", "alice@example.com");
+        var originalName = user.Name;
+
+        // act
+        user.UpdateProfile(null, "newalice@example.com");
+
+        // assert
+        Assert.Equal(originalName, user.Name);
+        Assert.Equal("newalice@example.com", user.Email);
+    }
+
+    [Fact]
+    public void UpdateProfile_WithInvalidEmail_ThrowsDomainValidationException()
+    {
+        // arrange
+        var user = new User("Alice", "alice@example.com");
+
+        // act and assert
+        Assert.Throws<DomainValidationException>(() => user.UpdateProfile(null, "invalid-email"));
+    }
+}
+

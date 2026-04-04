@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
 
 namespace SimpleWallet.IntegrationTests;
@@ -68,6 +69,89 @@ public class WalletApiIntegrationTests
 
         // assert: should return 401 Unauthorized since DELETE requires [Authorize]
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task PatchUser_WithoutToken_Returns401Unauthorized()
+    {
+        // arrange
+        var userId = "00000000-0000-0000-0000-000000000001";
+        var patchBody = JsonSerializer.Serialize(new { name = "NoAuth Update" });
+        var request = new HttpRequestMessage(new HttpMethod("PATCH"), $"{_baseUrl}/api/User/{userId}")
+        {
+            Content = new StringContent(patchBody, Encoding.UTF8, "application/json")
+        };
+
+        // act
+        var response = await _client.SendAsync(request);
+
+        // assert
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task PatchUser_WithAdminTokenAndValidPayload_ReturnsNoContent()
+    {
+        // arrange
+        var loginRequest = new { username = "admin", password = "admin123" };
+        var loginResponse = await _client.PostAsJsonAsync($"{_baseUrl}/api/Authentication/login", loginRequest);
+        Assert.Equal(HttpStatusCode.OK, loginResponse.StatusCode);
+
+        var loginContent = await loginResponse.Content.ReadAsStringAsync();
+        var jsonDoc = JsonDocument.Parse(loginContent);
+        var token = jsonDoc.RootElement.GetProperty("token").GetString();
+        Assert.NotNull(token);
+
+        var userId = "00000000-0000-0000-0000-000000000001";
+        var patchBody = JsonSerializer.Serialize(new { name = "Alice Updated" });
+        var request = new HttpRequestMessage(new HttpMethod("PATCH"), $"{_baseUrl}/api/User/{userId}")
+        {
+            Content = new StringContent(patchBody, Encoding.UTF8, "application/json")
+        };
+        request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        // act
+        var response = await _client.SendAsync(request);
+
+        // assert
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetUser_AfterPatch_ReturnsUpdatedName()
+    {
+        // arrange
+        var loginRequest = new { username = "admin", password = "admin123" };
+        var loginResponse = await _client.PostAsJsonAsync($"{_baseUrl}/api/Authentication/login", loginRequest);
+        Assert.Equal(HttpStatusCode.OK, loginResponse.StatusCode);
+
+        var loginContent = await loginResponse.Content.ReadAsStringAsync();
+        var jsonDoc = JsonDocument.Parse(loginContent);
+        var token = jsonDoc.RootElement.GetProperty("token").GetString();
+        Assert.NotNull(token);
+
+        var userId = "00000000-0000-0000-0000-000000000001";
+        var expectedName = "Alice Patched";
+
+        var patchBody = JsonSerializer.Serialize(new { name = expectedName });
+        var patchRequest = new HttpRequestMessage(new HttpMethod("PATCH"), $"{_baseUrl}/api/User/{userId}")
+        {
+            Content = new StringContent(patchBody, Encoding.UTF8, "application/json")
+        };
+        patchRequest.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        var patchResponse = await _client.SendAsync(patchRequest);
+        Assert.Equal(HttpStatusCode.NoContent, patchResponse.StatusCode);
+
+        // act
+        var getResponse = await _client.GetAsync($"{_baseUrl}/api/User/{userId}");
+
+        // assert
+        Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
+        var body = await getResponse.Content.ReadAsStringAsync();
+        var userDoc = JsonDocument.Parse(body);
+        var actualName = userDoc.RootElement.GetProperty("name").GetString();
+        Assert.Equal(expectedName, actualName);
     }
 }
 
