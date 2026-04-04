@@ -14,8 +14,8 @@ public static class WalletDbSeeder
 
         // seed data
 
-        var user1 = new User("Alice", "alice@example.com");
-        var user2 = new User("Bob", "bob@example.com");
+        var user1 = new User(Guid.Parse("00000000-0000-0000-0000-000000000001"), "Alice", "alice@example.com");
+        var user2 = new User(Guid.Parse("00000000-0000-0000-0000-000000000002"), "Bob", "bob@example.com");
 
         context.Users.AddRange(user1, user2);
 
